@@ -1,17 +1,16 @@
 var PORT = 8080;
 var HOST = '0.0.0.0';
 
-var dgram = require('dgram');
-var server = dgram.createSocket('udp4');
+var net = require('net');
 
-server.on('listening', function () {
-    var address = server.address();
-    console.log('UDP Server listening on ' + address.address + ":" + address.port);
+var server = net.createServer(function(socket) {
+	socket.write('Echo server\r\n');
+	socket.pipe(socket);
+
+ socket.on('data', function (data) {
+    console.log(data);
+  });
+
 });
 
-server.on('message', function (message, remote) {
-    console.log(remote.address + ':' + remote.port +' - ' + message);
-
-});
-
-server.bind(PORT, HOST);
+server.listen(PORT, HOST);
